@@ -11,11 +11,23 @@ module SmartAnswer
         end
 
         def working_days(pattern)
-          StatutorySickPayCalculator.dates_matching_pattern(
+          self.class.dates_matching_pattern(
             from: @date_range.begins_on,
             to: @date_range.ends_on,
             pattern: pattern
           )
+        end
+
+        private
+
+        def self.dates_matching_pattern(from:, to:, pattern:)
+          dates = from..to
+          # create an array of all dates that would have been normal workdays
+          matching_dates = []
+          dates.each do |d|
+            matching_dates << d if pattern.include?(d.wday.to_s)
+          end
+          matching_dates
         end
       end
 
@@ -257,16 +269,6 @@ module SmartAnswer
         else
           (pay / BigDecimal.new(days_worked.to_s) * 7).round(2)
         end
-      end
-
-      def self.dates_matching_pattern(from:, to:, pattern:)
-        dates = from..to
-        # create an array of all dates that would have been normal workdays
-        matching_dates = []
-        dates.each do |d|
-          matching_dates << d if pattern.include?(d.wday.to_s)
-        end
-        matching_dates
       end
 
       def weekly_payments
