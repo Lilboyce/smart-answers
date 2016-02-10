@@ -11,17 +11,7 @@ module SmartAnswer
         end
 
         def working_days(pattern)
-          self.class.dates_matching_pattern(
-            from: @date_range.begins_on,
-            to: @date_range.ends_on,
-            pattern: pattern
-          )
-        end
-
-        private
-
-        def self.dates_matching_pattern(from:, to:, pattern:)
-          dates = from..to
+          dates = @date_range.begins_on..@date_range.ends_on
           # create an array of all dates that would have been normal workdays
           matching_dates = []
           dates.each do |d|
